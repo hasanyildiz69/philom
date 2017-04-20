@@ -39,6 +39,10 @@ app.get("/trips", (req, res) => {
 	res.render("trips", {});
 });
 
+app.get("/apply", (req, res) => {
+	res.render("apply", {});
+});
+
 // app.get("/schedule", (req, res) => {
 // 	res.render("schedule", {});
 // });
