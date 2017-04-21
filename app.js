@@ -14,7 +14,7 @@ const sessionOptions = {
 // requiring database and models
 require("./db");
 const mongoose = require("mongoose");
-const Link = mongoose.model("Link");
+// const Link = mongoose.model("Link");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -57,6 +57,11 @@ app.get("/contact", (req, res) => {
 
 app.get("/subscribe", (req, res) => {
 	res.render("subscribe", {});
+});
+
+app.get("/admin", (req, res) => {
+	// require login at some point
+	res.render("admin", {});
 });
 
 // handle 404 errors

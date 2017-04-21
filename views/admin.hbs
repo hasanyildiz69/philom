@@ -1,0 +1,127 @@
+  <h2 class="baskerville f1 measure tc fw5 ph3 ph0-l">Admin Panel</h2>
+
+  <main class="black-80">
+  <form class="measure center" method="POST">
+  <h2>Submit a Trip</h2>
+    <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
+      <div class="mt3">
+        <label class="db fw6 lh-copy f6" for="title">Title</label>
+        <input class="pa2 input-reset ba bg-transparent w-100" type="text" name="title" id="title" required>
+      </div>
+
+      <div class="mt3">
+        <label class="db fw6 lh-copy f6" for="destination">Destination</label>
+        <small>Separate multiple countries by comma, i.e. Germany, France, Turkey</small>
+        <input class="pa2 input-reset ba bg-transparent w-100" type="text" name="destination" id="destination" required>
+      </div>
+
+    <div class="mt3">
+        <label class="db fw6 lh-copy f6" for="startDate">Start Date</label>
+        <input class="pa2 input-reset ba bg-transparent w-100" type="date" name="startDate" id="startDate" required>
+	</div>
+
+    <div class="mt3">
+        <label class="db fw6 lh-copy f6" for="endDate">End Date</label>
+        <input class="pa2 input-reset ba bg-transparent w-100" type="date" name="endDate" id="endDate" required>
+	</div>
+
+		<!-- allow multiple teachers... how to choose??? -->
+		<!-- populate multiple options, they ahve to copy and past exactly -->
+      <div class="mt3">
+        <label class="db fw6 lh-copy f6" for="title">Teachers</label>
+        <input class="pa2 input-reset ba bg-transparent w-100" type="text" name="teachers" id="teachers" required>
+      </div>
+
+      <div class="mt3">
+        <label for="displayText" class="f6 b db mb2">Short Description<span class="normal black-60"></span></label>
+        <textarea id="displayText" name="displayText" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      </div>
+
+      <div class="mt3">
+        <label for="fullInfo" class="f6 b db mb2">Complete Description<span class="normal black-60"></span></label>
+        <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      </div>
+
+
+    <div class="mv3">
+        <label class="db fw6 lh-copy f6" for="title">Paypal URL</label>
+        <small>Leave blank if you don't know.</small>
+        <input class="pa2 input-reset ba bg-transparent w-100" type="url" name="title" id="title">
+      </div>
+
+       <div class="mv3 pv2">
+		<label class="db fw8 lh-copy f8 underline" for="title">Pricing</label>
+	       <div class="mv3">
+       	<label class="dib fw6 lh-copy f6" for="title">Pax per Room</label>
+        	<input class="dib pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="1" required>
+        <label class="dib fw6 lh-copy f6" for="title">Price (USD)</label>
+        	<input class="dib pa2 input-reset ba bg-transparent w-20" type="number" min="0" required>
+      </div>
+
+        <div class="mv3">
+	       	<label class="dib fw6 lh-copy f6" for="title">Pax per Room</label>
+	        	<input class="dib pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="2" required>
+	        <label class="dib fw6 lh-copy f6" for="title">Price (USD)</label>
+	        	<input class="dib pa2 input-reset ba bg-transparent w-20" type="number" min="0" required>
+      	</div>
+		</div>
+
+       <div class="mv3 pv2">
+		<label class="db fw8 lh-copy f8 underline" for="title">Itinerary</label> 
+		<!-- ask how many days, then populate form! -->
+        <div class="mv3 pv2">
+	       	<label class="fw6 lh-copy f6" for="title">Day</label>
+	        	<input class="db pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="0" required>
+	        <label class="fw6 lh-copy f6" for="title">Description</label>
+	        	 <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      	</div>
+
+        <div class="mv3 pv2">
+	       	<label class="fw6 lh-copy f6" for="title">Day</label>
+	        	<input class="db pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="1" required>
+	        <label class="fw6 lh-copy f6" for="title">Description</label>
+	        	 <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      	</div>
+
+        <div class="mv3 pv2">
+	       	<label class="fw6 lh-copy f6" for="title">Day</label>
+	        	<input class="db pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="2" required>
+	        <label class="fw6 lh-copy f6" for="title">Description</label>
+	        	 <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      	</div>
+
+        <div class="mv3 pv2">
+	       	<label class="fw6 lh-copy f6" for="title">Day</label>
+	        	<input class="db pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="2" required>
+	        <label class="fw6 lh-copy f6" for="title">Description</label>
+	        	 <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      	</div>
+
+        <div class="mv3 pv2">
+	       	<label class="fw6 lh-copy f6" for="title">Day</label>
+	        	<input class="db pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="2" required>
+	        <label class="fw6 lh-copy f6" for="title">Description</label>
+	        	 <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      	</div>
+
+        <div class="mv3 pv2">
+	       	<label class="fw6 lh-copy f6" for="title">Day</label>
+	        	<input class="db pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="2" required>
+	        <label class="fw6 lh-copy f6" for="title">Description</label>
+	        	 <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      	</div>
+
+        <div class="mv3 pv2">
+	       	<label class="fw6 lh-copy f6" for="title">Day</label>
+	        	<input class="db pa2 input-reset ba bg-transparent w-20" type="number" min="0" value="2" required>
+	        <label class="fw6 lh-copy f6" for="title">Description</label>
+	        	 <textarea id="fullInfo" name="fullInfo" class="pa2 input-reset ba bg-transparent w-100" required></textarea>
+      	</div>
+      	</div>
+
+    <div class="">
+      <input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Submit">
+    </div>
+   </fieldset>
+  </form>
+</main>
