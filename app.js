@@ -39,6 +39,11 @@ app.get("/trips", (req, res) => {
 	res.render("trips", {});
 });
 
+app.get("/trips/:slug", (req, res) => {
+	console.log(req.params.slug)
+	res.render("trip", {});
+});
+
 app.get("/apply", (req, res) => {
 	res.render("apply", {});
 });
