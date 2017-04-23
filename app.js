@@ -48,9 +48,9 @@ app.get("/apply", (req, res) => {
 	res.render("apply", {});
 });
 
-// app.get("/schedule", (req, res) => {
-// 	res.render("schedule", {});
-// });
+app.get("/schedule", (req, res) => {
+	res.render("schedule", {});
+});
 
 app.get("/teachers", (req, res) => {
 	res.render("teachers", {});
