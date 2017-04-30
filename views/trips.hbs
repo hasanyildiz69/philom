@@ -1,13 +1,21 @@
 <section class="mw7 center avenir">
   <h2 class="baskerville f1 measure tc fw5 ph3 ph0-l">Philosophy Trips</h2>
 
-<!-- themes? filter by-->
 <section class="tc pb3 b">
-<a class="f4 link fw6 hover-blue no-underline black dib ph2 pv1" href="/trips/?hasEnded=false">Upcoming</a> /
-<a class="f4 link fw6 hover-green no-underline black dib ph2 pv1" href="/trips/?hasEnded=true">Past</a>
-<!-- default to upcoming -> border, then allow past to be clickable -->
+{{#if queryExists}}
+  {{#if hasEnded}}
+    <a class="f4 link fw6 hover-blue no-underline black dib ph2 pv1" href="/trips/?hasEnded=false">Upcoming</a> /
+    <a class="f4 link fw6 hover-green no-underline black dib ph2 pv1 ba b--dotted b--green green" href="/trips/?hasEnded=true">Past</a>
+  {{else}}
+    <a class="f4 link fw6 hover-blue no-underline black dib ph2 pv1 ba b--dotted b--blue blue" href="/trips/?hasEnded=false">Upcoming</a> /
+    <a class="f4 link fw6 hover-green no-underline black dib ph2 pv1" href="/trips/?hasEnded=true">Past</a>
+  {{/if}}
+{{else}}
+<a class="f4 link fw6 hover-blue no-underline dib ph2 pv1 ba b--dotted b--blue blue" href="/trips/?hasEnded=false">Upcoming</a> /
+<a class="f4 link fw6 hover-green no-underline dib ph2 pv1 ba b--dotted b--green green" href="/trips/?hasEnded=true">Past</a>
+{{/if}}
 </section>
-  <!-- end themes -->
+
 {{#each trips as |trip|}}
   {{#if trip.visible}}
   <article class="bt bb b--black-10">

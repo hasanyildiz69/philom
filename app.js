@@ -88,7 +88,6 @@ app.get("/", (req, res) => {
 
 app.get("/trips", (req, res) => {
 	const trips = [];
-	const queryHasEnded = req.query.hasEnded || 'false';
 
 	base('Trips')	
 		.select()
@@ -96,8 +95,13 @@ app.get("/trips", (req, res) => {
 		    records.forEach(function(record) {
 		    	const trip = {};
 		    	if (record.get('Trip Name') !== undefined) {
-		    		trip.hasEnded = (record.get('hasEnded') === 'NO') ? 'false': 'true';
-		    		trip.visible = trip.hasEnded === queryHasEnded ? true: false;
+	    			if (!req.query.hasEnded) {
+	    				trip.visible = true;
+	    			} else {
+	    				let tripHasEnded = (record.get('hasEnded') === 'NO') ? 'false': 'true';
+	    				trip.visible = tripHasEnded === req.query.hasEnded ? true: false;
+	    			}
+
 		    		trip.tripName = record.get('Trip Name');
 		    		trip.startDate = record.get('Start Date');
 		    		trip.endDate = record.get('End Date');
@@ -127,7 +131,9 @@ app.get("/trips", (req, res) => {
 		    	trips.push(trip);
 		    });
 		    //end for each
-		    res.render("trips", {trips: trips});
+		    const doesQueryExist = req.query.hasEnded ? true: false;
+		    const hasEnded = req.query.hasEnded === "true" ? true: false;
+		    res.render("trips", {trips: trips, queryExists: doesQueryExist, hasEnded: hasEnded});
 		    fetchNextPage();
 		    //figure out how to handle this recursion...
 		}, function done(err) {
