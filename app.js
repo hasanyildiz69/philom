@@ -26,6 +26,52 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+//AIRTABLE
+const Airtable = require('airtable');
+Airtable.configure({
+    endpointUrl: 'https://api.airtable.com',
+    apiKey: 'key7hriyx2rRS88Gn'
+});
+const base = Airtable.base('appQnbzyvd5JZmo1v');
+
+base('Trips')	
+	.select()
+	.eachPage(function page(records, fetchNextPage) {
+	    records.forEach(function(record) {
+	    	if (record.get('Trip Name') !== undefined) {
+		        console.log(record.get('Trip Name'));
+		        console.log('Start:', record.get('Start Date'), 'End:', record.get('End Date'));
+		        const it = record.get('Itinerary');
+		        if (it !== undefined) {
+		        	getItinerary(it);
+		        }
+		        
+	    	}
+	    });
+	    fetchNextPage();
+
+	}, function done(err) {
+	    if (err) { console.error(err); return; }
+	});
+
+function getItinerary(id) {
+	const obj = {};
+	let arr = [];
+	base('Itineraries').find(id, function(err, record) {
+	    if (err) { console.error(err); return; }
+	    //sort the keys
+	    for (let key in record.fields) {
+    	  if (key.substring(0, 3) === 'Day' && record.fields.hasOwnProperty(key)) {
+		    arr.push(key);
+		  }
+	    }
+	    arr.sort();
+	    arr.forEach(key => {
+	    	console.log(key, ": ", record.fields[key]);
+	    })
+	});
+}
+
 /*
 ROUTES
 */
@@ -62,11 +108,6 @@ app.get("/contact", (req, res) => {
 
 app.get("/subscribe", (req, res) => {
 	res.render("subscribe", {});
-});
-
-app.get("/admin", (req, res) => {
-	// require login at some point
-	res.render("admin", {});
 });
 
 // handle 404 errors
