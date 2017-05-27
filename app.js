@@ -3,13 +3,6 @@ const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-const session = require("express-session");
-
-const sessionOptions = {
-	secret: "secret cookie thang",
-	resave: true,
-	saveUninitialized: true
-};
 
 // requiring database and models
 require("./db");
@@ -21,61 +14,114 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 
 app.use(morgan("tiny"));
-app.use(session(sessionOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-//AIRTABLE
-const Airtable = require('airtable');
+// airtable config
+const Airtable = require("airtable");
 Airtable.configure({
-    endpointUrl: 'https://api.airtable.com',
-    apiKey: 'key7hriyx2rRS88Gn'
+	endpointUrl: "https://api.airtable.com",
+	apiKey: "key7hriyx2rRS88Gn"
 });
-const base = Airtable.base('appQnbzyvd5JZmo1v');
+const base = Airtable.base("appQnbzyvd5JZmo1v");
 
-function renderTrips() {
-	const trip = {};
-
-	base('Trips')	
-		.select()
-		.eachPage(function page(records, fetchNextPage) {
-		    records.forEach(function(record) {
-		    	if (record.get('Trip Name') !== undefined) {
-		    		trip.tripName = record.get('Trip Name');
-		    		trip.startDate = record.get('Start Date');
-		    		trip.endDate = record.get('End Date');
-			        const it = record.get('Itinerary');
-				        if (it !== undefined) {
-				        	getItinerary(it, trip, "trips");
-				        }
-			        
-		    	}
-		    });
-		    fetchNextPage();
-		}, function done(err) {
-		    if (err) { console.error(err); return; }
-		});
+// map teacher id to name
+const teacherIDtoName = {};
+function mapTeacherIdToName() {
+	base("Teachers").select().eachPage(
+		function page(records, fetchNextPage) {
+			records.forEach(function(record) {
+				teacherIDtoName[record.id] = record.get("Name");
+			});
+			fetchNextPage();
+		},
+		function done(err) {
+			if (err) {
+				console.error(err);
+				return;
+			}
+		}
+	);
 }
 
-function getItinerary(id, obj, template) {
-	obj.itinerary = {};
-	let arr = [];
-	base('Itineraries').find(id, function(err, record) {
-	    if (err) { console.error(err); return; }
-	    //sort the keys
-	    for (let key in record.fields) {
-    	  if (key.substring(0, 3) === 'Day' && record.fields.hasOwnProperty(key)) {
-		    arr.push(key);
-		  }
-	    }
-	    arr.sort();
-	    arr.forEach(key => {
-	    	obj.itinerary[key] = record.fields[key];
-	    })
-    	res.render(template, obj);
+mapTeacherIdToName();
+
+function getItinerary(id, trip) {
+	return new Promise((resolve, reject) => {
+		trip.itinerary = {};
+		let arr = [];
+		base("Itineraries").find(id, function(err, record) {
+			if (err) {
+				reject(err);
+			}
+			//sort the keys
+			for (let key in record.fields) {
+				if (
+					key.substring(0, 3) === "Day" &&
+					record.fields.hasOwnProperty(key)
+				) {
+					arr.push(key);
+				}
+			}
+			arr.sort();
+			arr.forEach(key => {
+				trip.itinerary[key] = record.fields[key];
+			});
+
+			resolve(trip.itinerary);
+		});
 	});
-}	
+}
+
+
+function promisifyRecord(record, req, trips) {
+	return new Promise((resolve, reject) => {
+		// store data for individual trips
+		const trip = {};
+		if (record.get("Trip Name") !== undefined) {
+			if (!req.query.hasEnded) {
+				trip.visible = true;
+			} else {
+				let tripHasEnded = record.get("hasEnded") === "NO"
+					? "false"
+					: "true";
+				trip.visible = (tripHasEnded === req.query.hasEnded)
+					? true
+					: false;
+			}
+
+			trip.slug = record.get("Slug");
+			trip.tripName = record.get("Trip Name");
+			trip.startDate = record.get("Start Date");
+			trip.endDate = record.get("End Date");
+			trip.photos = record.get("Pictures")[0]
+				? record.get("Pictures")[0].url
+				: "no image";
+			teacherIDs = record.get("Teachers");
+			trip.teachers = teacherIDs
+				? teacherIDs
+						.map(id => teacherIDtoName[id])
+						.join(", ")
+				: "";
+
+			const id = record.get("Itinerary");
+			if (id) {
+				getItinerary(id, trip)
+					.then(() => {
+					// add individual trip to array
+						trips.push(trip);
+					}).then(() => resolve(trips));
+					// return trips array with the new trip pushed	
+			} else {
+				reject("id undefined");
+			}
+
+		} else {
+			reject("trip name undefined");
+		}// end undefined check
+	})
+}
 
 /*
 ROUTES
@@ -87,62 +133,32 @@ app.get("/", (req, res) => {
 });
 
 app.get("/trips", (req, res) => {
+	const doesQueryExist = req.query.hasEnded ? true : false;
+	const hasEnded = req.query.hasEnded === "true"
+		? true
+		: false;
+
 	const trips = [];
+	base("Trips").select().eachPage(
+		function page(records, fetchNextPage) {
+			let promises = [];
+			records.forEach((record) => {
+				promises.push(promisifyRecord(record, req, trips));
+			})
 
-	base('Trips')	
-		.select()
-		.eachPage(function page(records, fetchNextPage) {
-		    records.forEach(function(record) {
-		    	const trip = {};
-		    	if (record.get('Trip Name') !== undefined) {
-	    			if (!req.query.hasEnded) {
-	    				trip.visible = true;
-	    			} else {
-	    				let tripHasEnded = (record.get('hasEnded') === 'NO') ? 'false': 'true';
-	    				trip.visible = tripHasEnded === req.query.hasEnded ? true: false;
-	    			}
-
-		    		trip.tripName = record.get('Trip Name');
-		    		trip.startDate = record.get('Start Date');
-		    		trip.endDate = record.get('End Date');
-		    		trip.photos = record.get('Pictures')[0].url;
-		    		trip.teachers = record.get('Teachers'); //need to get teachers...
-
-			        const id = record.get('Itinerary');
-				        if (id !== undefined) {
-		        			trip.itinerary = {};
-							let arr = [];
-							base('Itineraries').find(id, function(err, record) {
-							    if (err) { console.error(err); return; }
-							    //sort the keys
-							    for (let key in record.fields) {
-						    	  if (key.substring(0, 3) === 'Day' && record.fields.hasOwnProperty(key)) {
-								    arr.push(key);
-								  }
-							    }
-							    arr.sort();
-							    arr.forEach(key => {
-							    	trip.itinerary[key] = record.fields[key];
-							    })
-							});
-				        }
-		    	}
-
-		    	trips.push(trip);
-		    });
-		    //end for each
-		    const doesQueryExist = req.query.hasEnded ? true: false;
-		    const hasEnded = req.query.hasEnded === "true" ? true: false;
-		    res.render("trips", {trips: trips, queryExists: doesQueryExist, hasEnded: hasEnded});
-		    fetchNextPage();
-		    //figure out how to handle this recursion...
-		}, function done(err) {
-		    if (err) { console.error(err); return; }
+			Promise.all(promises).then(() => {
+				console.log(trips)
+				res.render("trips", {
+					trips: trips,
+					queryExists: doesQueryExist,
+					hasEnded: hasEnded
+					})
+				}).catch( (err) => console.log(err));
 		});
 });
 
 app.get("/trips/:slug", (req, res) => {
-	console.log(req.params.slug)
+	console.log(req.params.slug);
 	res.render("trip", {});
 });
 
@@ -154,8 +170,8 @@ app.get("/schedule", (req, res) => {
 	res.render("schedule", {});
 });
 
-app.get("/teachers", (req, res) => {
-	res.render("teachers", {});
+app.get("/lecturers", (req, res) => {
+	res.render("lecturers", {});
 });
 
 app.get("/contact", (req, res) => {

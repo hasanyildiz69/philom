@@ -19,7 +19,7 @@
 {{#each trips as |trip|}}
   {{#if trip.visible}}
   <article class="bt bb b--black-10">
-    <a class="db pv4 ph3 ph0-l no-underline black dim" href="/trips/123">
+    <a class="db pv4 ph3 ph0-l no-underline black dim" href="/trips/{{trip.slug}}">
       <div class="flex flex-column flex-row-ns">
         <div class="pr3-ns mb4 mb0-ns w-100 w-40-ns">
           <img src="{{trip.photos}}" class="db" alt="Photo of a dimly lit room with a computer interface terminal.">
@@ -31,7 +31,7 @@
             computer, a powerful cpu machine that relies on subatomic particles instead
             of transistors.
           </p>
-          <p class="f6 lh-copy mv0">with Yunus Tuncel</p>
+          <p class="f6 lh-copy mv0">with {{trip.teachers}}</p>
           <p class="f6 lh-copy mv0">from {{trip.startDate}} to {{trip.endDate}}</p>
           <!-- add locations here: -->
         </div>
