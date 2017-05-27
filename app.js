@@ -100,6 +100,7 @@ function promisifyRecord(record, req, trips) {
 			trip.tripName = record.get("Trip Name");
 			trip.startDate = record.get("Start Date");
 			trip.endDate = record.get("End Date");
+			trip.shortDescription = record.get("Short Description");
 			trip.fullDescription = record.get("Full Description");
 			trip.photos = record.get("Pictures")[0]
 				? record.get("Pictures")[0].url
@@ -150,7 +151,6 @@ app.get("/trips", (req, res) => {
 
 		Promise.all(promises)
 			.then(() => {
-				console.log(trips);
 				res.render("trips", {
 					trips: trips,
 					queryExists: doesQueryExist,
@@ -173,7 +173,7 @@ app.get("/apply", (req, res) => {
 });
 
 app.get("/schedule", (req, res) => {
-	res.render("schedule", {});
+	res.render("schedule", {trips: {}});
 });
 
 app.get("/lecturers", (req, res) => {

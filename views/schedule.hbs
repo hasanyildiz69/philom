@@ -9,36 +9,21 @@
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Dates</th>
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Trip</th>
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Destination</th>
-          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Price</th>
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Deadline</th>
-          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Teacher</th>
+          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Lecturer</th>
+          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white"></th>
         </tr>
       </thead>
       <tbody class="lh-copy">
+      {{#each trips as |t|}}
         <tr>
-          <td class="pv3 pr3 bb b--black-20">May 1st 2017 - May 5th 2017</td>
-          <td class="pv3 pr3 bb b--black-20"><a class="link black" href="http://mrmrs.io/writing">The Origins of Greek Philosophy</a></td>
-          <td class="pv3 pr3 bb b--black-20">Greece</td>
-          <td class="pv3 pr3 bb b--black-20">USD 1,000</td>
-          <td class="pv3 pr3 bb b--black-20">April 2nd 2017</td>
-          <td class="pv3 pr3 bb b--black-20">Yunus Tuncel Ph.d</td>
+          <td class="pv3 pr3 bb b--black-20">{{t.startDate}} - {{t.endDate}}</td>
+          <td class="pv3 pr3 bb b--black-20"><a class="link black" href="http://philomobile.bigcartel.com/">{{t.name}}</a></td>
+          <td class="pv3 pr3 bb b--black-20">{{t.destinations}}</td>
+          <td class="pv3 pr3 bb b--black-20">{{t.applyBy}}</td>
+          <td class="pv3 pr3 bb b--black-20">{{t.teachers}}</td>
         </tr>
-        <tr>
-          <td class="pv3 pr3 bb b--black-20">May 1st 2017 - May 5th 2017</td>
-          <td class="pv3 pr3 bb b--black-20">The Origins of Greek Philosophy</td>
-          <td class="pv3 pr3 bb b--black-20">Greece</td>
-          <td class="pv3 pr3 bb b--black-20">USD 1,000</td>
-          <td class="pv3 pr3 bb b--black-20">April 2nd 2017</td>
-          <td class="pv3 pr3 bb b--black-20">Yunus Tuncel Ph.d</td>
-        </tr>
-        <tr>
-          <td class="pv3 pr3 bb b--black-20">May 1st 2017 - May 5th 2017</td>
-          <td class="pv3 pr3 bb b--black-20">The Origins of Greek Philosophy</td>
-          <td class="pv3 pr3 bb b--black-20">Greece</td>
-          <td class="pv3 pr3 bb b--black-20">USD 1,000</td>
-          <td class="pv3 pr3 bb b--black-20">April 2nd 2017</td>
-          <td class="pv3 pr3 bb b--black-20">Yunus Tuncel Ph.d</td>
-        </tr>
+      {{/each}}
       </tbody>
     </table>
   </div>
