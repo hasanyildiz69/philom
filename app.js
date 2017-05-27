@@ -177,7 +177,7 @@ app.get("/schedule", (req, res) => {
 });
 
 app.get("/lecturers", (req, res) => {
-	console.log(teacherIDtoDetails)
+	mapTeacherIdToName();
 	res.render("lecturers", {teachers: teacherIDtoDetails});
 });
 
