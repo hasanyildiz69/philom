@@ -129,6 +129,30 @@ function promisifyRecord(record, req, trips) {
 	});
 }
 
+const allTrips = {}
+function refreshTrips() {
+	return new Promise((resolve, reject) => {
+		base("Trips").select().eachPage(function page(records, fetchNextPage) {
+		records.forEach(record => {
+			let teacherIDs = record.get("Teachers");
+			let teachers = teacherIDs
+				? teacherIDs.map(id => teacherIDtoDetails[id].name).join(", ")
+				: "";
+
+			allTrips[record.id] = {
+				name: record.get("Trip Name"),
+				startDate: record.get("Start Date"),
+				endDate: record.get("End Date"),
+				applyBy: record.get("Deadline"),
+				destinations: record.get("Destinations"),
+				teachers: teachers
+			}
+			resolve(allTrips);
+		});
+	});	
+})
+}
+
 /*
 ROUTES
 */
@@ -173,7 +197,7 @@ app.get("/apply", (req, res) => {
 });
 
 app.get("/schedule", (req, res) => {
-	res.render("schedule", {trips: {}});
+	refreshTrips().then((trips) => res.render("schedule", {trips: trips}));	
 });
 
 app.get("/lecturers", (req, res) => {
