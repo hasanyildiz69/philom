@@ -45,6 +45,8 @@ function mapTeacherIdToName() {
 	);
 }
 
+const tripSlugToDetails = {};
+
 mapTeacherIdToName();
 
 function getItinerary(id, trip) {
@@ -109,8 +111,9 @@ function promisifyRecord(record, req, trips) {
 			if (id) {
 				getItinerary(id, trip)
 					.then(() => {
-					// add individual trip to array
+						// add individual trip to array
 						trips.push(trip);
+						tripSlugToDetails[trip.slug] = trip;
 					}).then(() => resolve(trips));
 					// return trips array with the new trip pushed	
 			} else {
@@ -158,8 +161,10 @@ app.get("/trips", (req, res) => {
 });
 
 app.get("/trips/:slug", (req, res) => {
-	console.log(req.params.slug);
-	res.render("trip", {});
+	const slug = req.params.slug;
+	const details = tripSlugToDetails[req.params.slug];
+	console.log(details)
+	res.render("trip", {trip: details});
 });
 
 app.get("/apply", (req, res) => {
