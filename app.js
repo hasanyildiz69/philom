@@ -27,12 +27,16 @@ Airtable.configure({
 const base = Airtable.base("appQnbzyvd5JZmo1v");
 
 // map teacher id to name
-const teacherIDtoName = {};
+const teacherIDtoDetails = {};
 function mapTeacherIdToName() {
 	base("Teachers").select().eachPage(
 		function page(records, fetchNextPage) {
 			records.forEach(function(record) {
-				teacherIDtoName[record.id] = record.get("Name");
+				teacherIDtoDetails[record.id] = {
+					name: record.get("Name"),
+					description: record.get("Description"),
+					picture: record.get("Picture")[0].url
+				};
 			});
 			fetchNextPage();
 		},
@@ -45,9 +49,9 @@ function mapTeacherIdToName() {
 	);
 }
 
-const tripSlugToDetails = {};
-
 mapTeacherIdToName();
+
+const tripSlugToDetails = {};
 
 function getItinerary(id, trip) {
 	return new Promise((resolve, reject) => {
@@ -76,7 +80,6 @@ function getItinerary(id, trip) {
 	});
 }
 
-
 function promisifyRecord(record, req, trips) {
 	return new Promise((resolve, reject) => {
 		// store data for individual trips
@@ -88,7 +91,7 @@ function promisifyRecord(record, req, trips) {
 				let tripHasEnded = record.get("hasEnded") === "NO"
 					? "false"
 					: "true";
-				trip.visible = (tripHasEnded === req.query.hasEnded)
+				trip.visible = tripHasEnded === req.query.hasEnded
 					? true
 					: false;
 			}
@@ -97,14 +100,13 @@ function promisifyRecord(record, req, trips) {
 			trip.tripName = record.get("Trip Name");
 			trip.startDate = record.get("Start Date");
 			trip.endDate = record.get("End Date");
+			trip.fullDescription = record.get("Full Description");
 			trip.photos = record.get("Pictures")[0]
 				? record.get("Pictures")[0].url
 				: "no image";
 			teacherIDs = record.get("Teachers");
 			trip.teachers = teacherIDs
-				? teacherIDs
-						.map(id => teacherIDtoName[id])
-						.join(", ")
+				? teacherIDs.map(id => teacherIDtoDetails[id].name).join(", ")
 				: "";
 
 			const id = record.get("Itinerary");
@@ -114,16 +116,16 @@ function promisifyRecord(record, req, trips) {
 						// add individual trip to array
 						trips.push(trip);
 						tripSlugToDetails[trip.slug] = trip;
-					}).then(() => resolve(trips));
-					// return trips array with the new trip pushed	
+					})
+					.then(() => resolve(trips));
+				// return trips array with the new trip pushed
 			} else {
 				reject("id undefined");
 			}
-
 		} else {
 			reject("trip name undefined");
-		}// end undefined check
-	})
+		} // end undefined check
+	});
 }
 
 /*
@@ -137,34 +139,33 @@ app.get("/", (req, res) => {
 
 app.get("/trips", (req, res) => {
 	const doesQueryExist = req.query.hasEnded ? true : false;
-	const hasEnded = req.query.hasEnded === "true"
-		? true
-		: false;
+	const hasEnded = req.query.hasEnded === "true" ? true : false;
 
 	const trips = [];
-	base("Trips").select().eachPage(
-		function page(records, fetchNextPage) {
-			let promises = [];
-			records.forEach((record) => {
-				promises.push(promisifyRecord(record, req, trips));
-			})
+	base("Trips").select().eachPage(function page(records, fetchNextPage) {
+		let promises = [];
+		records.forEach(record => {
+			promises.push(promisifyRecord(record, req, trips));
+		});
 
-			Promise.all(promises).then(() => {
-				console.log(trips)
+		Promise.all(promises)
+			.then(() => {
+				console.log(trips);
 				res.render("trips", {
 					trips: trips,
 					queryExists: doesQueryExist,
 					hasEnded: hasEnded
-					})
-				}).catch( (err) => console.log(err));
-		});
+				});
+			})
+			.catch(err => console.log(err));
+	});
 });
 
 app.get("/trips/:slug", (req, res) => {
 	const slug = req.params.slug;
 	const details = tripSlugToDetails[req.params.slug];
-	console.log(details)
-	res.render("trip", {trip: details});
+	console.log(details);
+	res.render("trip", { trip: details });
 });
 
 app.get("/apply", (req, res) => {
@@ -176,7 +177,8 @@ app.get("/schedule", (req, res) => {
 });
 
 app.get("/lecturers", (req, res) => {
-	res.render("lecturers", {});
+	console.log(teacherIDtoDetails)
+	res.render("lecturers", {teachers: teacherIDtoDetails});
 });
 
 app.get("/contact", (req, res) => {

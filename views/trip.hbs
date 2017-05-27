@@ -1,29 +1,16 @@
 <section class="mw7 center">
   <h2 class="baskerville f1 measure tc fw5 ph3 ph0-l">{{trip.tripName}}</h2>
   <div class="tc">	
-  	<a class="white f4 link bg-dark-blue b no-underline black dib ph2 pv1" href="http://mrmrs.io/gifolio">7 Days</a>
-    <a class="white f4 link b bg-blue no-underline black dib ph2 pv1" href="http://mrsjxn.com">Germany, France</a>
-    <a class="white f4 link b bg-green no-underline black dib ph2 pv1" href="http://prnt.cc">Taught by {{trip.teachers}}</a>
+  	<a class="white f4 link bg-dark-blue b no-underline black dib ph2 pv1">{{trip.startDate}} to {{trip.endDate}}</a>
+    <a class="white f4 link b bg-green no-underline black dib ph2 pv1">Taught by {{trip.teachers}}</a>
   </div>
    
 	<article class="baskerville pb2">
 	  <div class="ph3 ph4-m ph5-l">
 	    <div class="measure db center f5 f4-ns lh-copy">
-	      <img class="db w-100 mt4 mt5-ns" src="http://mrmrs.io/photos/013.jpg" alt="Photo of the foundations of a building on a cliff overlooking a lighthouse.">
-	      <p>
-	        Before it burned to the ground, the structure filled a small beach
-	        inlet below the Cliff House, also owned by Adolph Sutro at the time.
-	        Shortly after closing, a fire in 1966 destroyed the building
-	        while it was in the process of being demolished.
-	      </p>
-	      <p>
-	        During low tides, a powerful turbine water pump,
-	        built inside a cave at sea level, could be switched on from a control
-	        room and could fill the tanks at a rate of 6,000 US gallons a minute,
-	        recycling all the water in five hours.
-	      </p>
-
-	    </div>
+	      <img class="db w-100 mt4 mt5-ns" src="{{trip.photos}}">
+	      	<p>{{{trip.fullDescription}}}</p>
+      </div>
 	  </div>
 	</article>
 
@@ -41,19 +28,5 @@
 		  </div>
 		</article>
 	{{/each}}
-
-
-	<h2 class="baskerville f1 measure tc fw5 ph3 ph0-l">Teachers</h2>
-    <article class="w100 bg-white br3 pa3 pa4-ns ma3 ba b--black-10 avenir">
-	    <div class="tc">
-	      <img src="http://tachyons.io/img/avatar_1.jpg" class="br2 h4 w4 dib">
-	      <h1 class="f4">Charles Oliver, Ph.d</h1>
-	      <hr class="mw3 bb bw1 b--black-10">
-	    </div>
-
-	    <p class="lh-copy measure center f8 black-70">
-	    Charles Oliver teaches ancient philosophy, ethics, and aesthetics at Pace University, New York. Specializes in the history of philosophy and social and political thought. Current research focuses on Plato and the poets, the link between the new science and changes in ethical theory in early modern philosophy, and Cezanne. He is currently lead teacher of our Philotrip: The Origins of Greek Philosophy
-	    </p>
-		</article>
-
+</article>
 </section>
