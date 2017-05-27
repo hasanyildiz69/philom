@@ -26,6 +26,10 @@ Airtable.configure({
 });
 const base = Airtable.base("appQnbzyvd5JZmo1v");
 
+// global data store
+const tripSlugToDetails = {};
+const allTrips = {}
+
 // map teacher id to name
 const teacherIDtoDetails = {};
 function mapTeacherIdToName() {
@@ -48,10 +52,6 @@ function mapTeacherIdToName() {
 		}
 	);
 }
-
-mapTeacherIdToName();
-
-const tripSlugToDetails = {};
 
 function getItinerary(id, trip) {
 	return new Promise((resolve, reject) => {
@@ -129,7 +129,7 @@ function promisifyRecord(record, req, trips) {
 	});
 }
 
-const allTrips = {}
+
 function refreshTrips() {
 	return new Promise((resolve, reject) => {
 		base("Trips").select().eachPage(function page(records, fetchNextPage) {
@@ -203,10 +203,6 @@ app.get("/schedule", (req, res) => {
 app.get("/lecturers", (req, res) => {
 	mapTeacherIdToName();
 	res.render("lecturers", {teachers: teacherIDtoDetails});
-});
-
-app.get("/contact", (req, res) => {
-	res.render("contact", {});
 });
 
 app.get("/subscribe", (req, res) => {
