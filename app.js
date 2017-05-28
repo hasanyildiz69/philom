@@ -30,6 +30,9 @@ const base = Airtable.base("appQnbzyvd5JZmo1v");
 const tripSlugToDetails = {};
 const allTrips = {}
 
+// populate data store
+mapTeacherIdToName();
+
 // map teacher id to name
 const teacherIDtoDetails = {};
 function mapTeacherIdToName() {
