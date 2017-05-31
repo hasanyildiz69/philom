@@ -28,7 +28,7 @@ const base = Airtable.base("appQnbzyvd5JZmo1v");
 
 // global data store
 const tripSlugToDetails = {};
-const allTrips = {}
+const allTrips = {};
 
 // populate data store
 mapTeacherIdToName();
@@ -64,40 +64,41 @@ function getItinerary(id, trip) {
 			if (err) {
 				reject(err);
 			}
+		
 			//sort the keys
-			for (let key in record.fields) {
-				if (
-					key.substring(0, 3) === "Day" &&
-					record.fields.hasOwnProperty(key)
-				) {
-					arr.push(key);
+			if (record) {
+				for (let key in record.fields) {
+					if (
+						key.substring(0, 3) === "Day" &&
+						record.fields.hasOwnProperty(key)
+					) {
+						arr.push(key);
+					}
 				}
-			}
-			arr.sort();
-			arr.forEach(key => {
-				trip.itinerary[key] = record.fields[key];
-			});
+				arr.sort();
+				arr.forEach(key => {
+					trip.itinerary[key] = record.fields[key];
+				});
 
-			resolve(trip.itinerary);
+				resolve(trip.itinerary);
+			} else {
+				reject(trip.itinerary);
+			}
 		});
 	});
 }
 
-function promisifyRecord(record, req, trips) {
+function promisifyRecord(record, req, trips, hasEnded) {
 	return new Promise((resolve, reject) => {
 		// store data for individual trips
 		const trip = {};
 		if (record.get("Trip Name") !== undefined) {
-			if (!req.query.hasEnded) {
-				trip.visible = true;
-			} else {
-				let tripHasEnded = record.get("hasEnded") === "NO"
-					? "false"
-					: "true";
-				trip.visible = tripHasEnded === req.query.hasEnded
-					? true
-					: false;
-			}
+			let tripHasEnded = record.get("hasEnded") === "NO"
+							? false
+							: true;
+			trip.visible = tripHasEnded === hasEnded
+							? true
+							: false;
 
 			trip.slug = record.get("Slug");
 			trip.tripName = record.get("Trip Name");
@@ -132,28 +133,29 @@ function promisifyRecord(record, req, trips) {
 	});
 }
 
-
 function refreshTrips() {
 	return new Promise((resolve, reject) => {
 		base("Trips").select().eachPage(function page(records, fetchNextPage) {
-		records.forEach(record => {
-			let teacherIDs = record.get("Teachers");
-			let teachers = teacherIDs
-				? teacherIDs.map(id => teacherIDtoDetails[id].name).join(", ")
-				: "";
+			records.forEach(record => {
+				let teacherIDs = record.get("Teachers");
+				let teachers = teacherIDs
+					? teacherIDs
+							.map(id => teacherIDtoDetails[id].name)
+							.join(", ")
+					: "";
 
-			allTrips[record.id] = {
-				name: record.get("Trip Name"),
-				startDate: record.get("Start Date"),
-				endDate: record.get("End Date"),
-				applyBy: record.get("Deadline"),
-				destinations: record.get("Destinations"),
-				teachers: teachers
-			}
-			resolve(allTrips);
+				allTrips[record.id] = {
+					name: record.get("Trip Name"),
+					startDate: record.get("Start Date"),
+					endDate: record.get("End Date"),
+					applyBy: record.get("Deadline"),
+					destinations: record.get("Destinations"),
+					teachers: teachers
+				};
+				resolve(allTrips);
+			});
 		});
-	});	
-})
+	});
 }
 
 /*
@@ -166,21 +168,24 @@ app.get("/", (req, res) => {
 });
 
 app.get("/trips", (req, res) => {
-	const doesQueryExist = req.query.hasEnded ? true : false;
-	const hasEnded = req.query.hasEnded === "true" ? true : false;
+	let hasEnded;
+	if (req.query.hasEnded) {
+		hasEnded = req.query.hasEnded === "true" ? true : false;
+	} else {
+		hasEnded = false;
+	}
 
 	const trips = [];
 	base("Trips").select().eachPage(function page(records, fetchNextPage) {
 		let promises = [];
 		records.forEach(record => {
-			promises.push(promisifyRecord(record, req, trips));
+			promises.push(promisifyRecord(record, req, trips, hasEnded));
 		});
 
 		Promise.all(promises)
 			.then(() => {
 				res.render("trips", {
 					trips: trips,
-					queryExists: doesQueryExist,
 					hasEnded: hasEnded
 				});
 			})
@@ -191,7 +196,6 @@ app.get("/trips", (req, res) => {
 app.get("/trips/:slug", (req, res) => {
 	const slug = req.params.slug;
 	const details = tripSlugToDetails[req.params.slug];
-	console.log(details);
 	res.render("trip", { trip: details });
 });
 
@@ -200,12 +204,12 @@ app.get("/apply", (req, res) => {
 });
 
 app.get("/schedule", (req, res) => {
-	refreshTrips().then((trips) => res.render("schedule", {trips: trips}));	
+	refreshTrips().then(trips => res.render("schedule", { trips: trips }));
 });
 
 app.get("/lecturers", (req, res) => {
 	mapTeacherIdToName();
-	res.render("lecturers", {teachers: teacherIDtoDetails});
+	res.render("lecturers", { teachers: teacherIDtoDetails });
 });
 
 app.get("/subscribe", (req, res) => {
