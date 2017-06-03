@@ -4,11 +4,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-// requiring database and models
-require("./db");
-const mongoose = require("mongoose");
-// const Link = mongoose.model("Link");
-
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
@@ -151,6 +146,7 @@ function refreshTrips() {
 					endDate: record.get("End Date"),
 					applyBy: record.get("Deadline"),
 					destinations: record.get("Destinations"),
+					slug: record.get("Slug"),
 					teachers: teachers
 				};
 				resolve(allTrips);
