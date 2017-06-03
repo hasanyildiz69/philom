@@ -77,9 +77,8 @@ function getItinerary(id, trip) {
 				}
 				arr.sort();
 				arr.forEach(key => {
-					trip.itinerary[key] = record.fields[key];
+					trip.itinerary[key] = record.fields[key].replace("\n", "<br>");
 				});
-
 				resolve(trip.itinerary);
 			} else {
 				reject(trip.itinerary);
