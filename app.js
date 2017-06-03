@@ -208,9 +208,13 @@ app.get("/schedule", (req, res) => {
 	refreshTrips().then(trips => res.render("schedule", { trips: trips }));
 });
 
-app.get("/lecturers", (req, res) => {
+app.get("/instructors", (req, res) => {
 	mapTeacherIdToName();
 	res.render("lecturers", { teachers: teacherIDtoDetails });
+});
+
+app.get("/blog", (req, res) => {
+	res.render("blog", {});
 });
 
 app.get("/subscribe", (req, res) => {
