@@ -77,7 +77,7 @@ function getItinerary(id, trip) {
 				}
 				arr.sort();
 				arr.forEach(key => {
-					trip.itinerary[key] = record.fields[key].replace("\n", "<br>");
+					trip.itinerary[key] = record.fields[key].replace("\n", "<br><br>");
 				});
 				resolve(trip.itinerary);
 			} else {
@@ -105,6 +105,8 @@ function promisifyRecord(record, req, trips, hasEnded) {
 			trip.endDate = record.get("End Date");
 			trip.shortDescription = record.get("Short Description");
 			trip.fullDescription = record.get("Full Description");
+			trip.fullDescription = trip.fullDescription.replace("\n", "<br><br>")
+			console.log(trip.fullDescription)
 			trip.photos = record.get("Pictures")[0]
 				? record.get("Pictures")[0].url
 				: "no image";
