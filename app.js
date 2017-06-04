@@ -22,7 +22,6 @@ Airtable.configure({
 const base = Airtable.base("appQnbzyvd5JZmo1v");
 
 // global data store
-const tripSlugToDetails = {};
 const allTrips = {};
 
 // populate data store
@@ -82,7 +81,7 @@ function getItinerary(id, trip) {
 	});
 }
 
-function promisifyRecord(record, req, trips, hasEnded) {
+function promisifyRecord(record, trips, hasEnded) {
 	return new Promise((resolve, reject) => {
 		// store data for individual trips
 		const trip = {};
@@ -94,7 +93,7 @@ function promisifyRecord(record, req, trips, hasEnded) {
 							? true
 							: false;
 
-			trip.slug = record.get("Slug");
+			trip.tripID = record["id"]
 			trip.tripName = record.get("Trip Name");
 			trip.startDate = record.get("Start Date");
 			trip.endDate = record.get("End Date");
@@ -115,7 +114,6 @@ function promisifyRecord(record, req, trips, hasEnded) {
 					.then(() => {
 						// add individual trip to array
 						trips.push(trip);
-						tripSlugToDetails[trip.slug] = trip;
 					})
 					.then(() => resolve(trips));
 				// return trips array with the new trip pushed
@@ -145,7 +143,6 @@ function refreshTrips() {
 					endDate: record.get("End Date"),
 					applyBy: record.get("Deadline"),
 					destinations: record.get("Destinations"),
-					slug: record.get("Slug"),
 					teachers: teachers
 				};
 				resolve(allTrips);
@@ -175,7 +172,7 @@ app.get("/trips", (req, res) => {
 	base("Trips").select().eachPage(function page(records, fetchNextPage) {
 		let promises = [];
 		records.forEach(record => {
-			promises.push(promisifyRecord(record, req, trips, hasEnded));
+			promises.push(promisifyRecord(record, trips, hasEnded));
 		});
 
 		Promise.all(promises)
@@ -189,10 +186,21 @@ app.get("/trips", (req, res) => {
 	});
 });
 
-app.get("/trips/:slug", (req, res) => {
-	const slug = req.params.slug;
-	const details = tripSlugToDetails[req.params.slug];
-	res.render("trip", { trip: details });
+app.get("/trips/:tripID", (req, res) => {
+	const tripID = req.params.tripID;
+	const trips = []
+
+	base('Trips').find(tripID, function(err, record) {
+    if (err) { console.error(err); return; }
+	   	promisifyRecord(record, trips)
+			.then(() => {
+				res.render("trip", {
+					trip: trips[0]
+				});
+			})
+			.catch(err => console.log(err));
+	});
+
 });
 
 app.get("/apply", (req, res) => {

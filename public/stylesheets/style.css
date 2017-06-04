@@ -4,3 +4,7 @@
 	background-image: linear-gradient(to top, #fad0c4 0%, #fad0c4 1%, #ffd1ff 100%);
 	background-attachment: fixed
 }
+
+.bg-opac {
+	background: rgba(255, 255, 255, 0.75);
+}
