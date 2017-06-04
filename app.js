@@ -3,6 +3,7 @@ const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const moment = require("moment");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -95,8 +96,8 @@ function promisifyRecord(record, trips, hasEnded) {
 
 			trip.tripID = record["id"]
 			trip.tripName = record.get("Trip Name");
-			trip.startDate = record.get("Start Date");
-			trip.endDate = record.get("End Date");
+			trip.startDate = moment(record.get("Start Date")).format("Do MMM YYYY");
+			trip.endDate = moment(record.get("End Date")).format("Do MMM YYYY");
 			trip.shortDescription = record.get("Short Description");
 			trip.fullDescription = record.get("Full Description");
 			trip.fullDescription = trip.fullDescription.replace("\n", "<br><br>")
@@ -139,8 +140,8 @@ function refreshTrips() {
 
 				allTrips[record.id] = {
 					name: record.get("Trip Name"),
-					startDate: record.get("Start Date"),
-					endDate: record.get("End Date"),
+					startDate: moment(record.get("Start Date")).format("Do MMM YYYY"),
+					endDate: moment(record.get("End Date")).format("Do MMM YYYY"),
 					applyBy: record.get("Deadline"),
 					destinations: record.get("Destinations"),
 					teachers: teachers,

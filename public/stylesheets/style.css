@@ -8,3 +8,9 @@
 .bg-opac {
 	background: rgba(255, 255, 255, 0.75);
 }
+
+iframe {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
