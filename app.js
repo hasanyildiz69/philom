@@ -143,7 +143,8 @@ function refreshTrips() {
 					endDate: record.get("End Date"),
 					applyBy: record.get("Deadline"),
 					destinations: record.get("Destinations"),
-					teachers: teachers
+					teachers: teachers,
+					tripID: record.id
 				};
 				resolve(allTrips);
 			});
@@ -191,14 +192,18 @@ app.get("/trips/:tripID", (req, res) => {
 	const trips = []
 
 	base('Trips').find(tripID, function(err, record) {
-    if (err) { console.error(err); return; }
-	   	promisifyRecord(record, trips)
-			.then(() => {
-				res.render("trip", {
-					trip: trips[0]
-				});
-			})
-			.catch(err => console.log(err));
+    if (err) {
+    	console.error(err);
+    	res.render("error", { message: "404 error: page not found" });
+    }
+
+   	promisifyRecord(record, trips)
+		.then(() => {
+			res.render("trip", {
+				trip: trips[0]
+			});
+		})
+		.catch(err => console.log(err));
 	});
 
 });
