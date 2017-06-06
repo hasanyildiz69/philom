@@ -4,13 +4,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const moment = require("moment");
-const http = require("http");
-
-// keeping heroku app alive
-setInterval(function() {
-    http.get("secure-headland-41851.herokuapp.com");
-}, 300000); // every 5 minutes (300000)
-
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
