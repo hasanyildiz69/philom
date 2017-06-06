@@ -142,7 +142,7 @@ function refreshTrips() {
 					name: record.get("Trip Name"),
 					startDate: moment(record.get("Start Date")).format("Do MMM YYYY"),
 					endDate: moment(record.get("End Date")).format("Do MMM YYYY"),
-					applyBy: record.get("Deadline"),
+					applyBy: moment(record.get("Deadline")).format("Do MMM YYYY"),
 					destinations: record.get("Destinations"),
 					teachers: teachers,
 					tripID: record.id
@@ -228,6 +228,10 @@ app.get("/blog", (req, res) => {
 
 app.get("/subscribe", (req, res) => {
 	res.render("subscribe", {});
+});
+
+app.get("/apply", (req, res) => {
+	res.render("apply", {});
 });
 
 // handle 404 errors
