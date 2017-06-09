@@ -129,7 +129,11 @@ function promisifyRecord(record, trips, hasEnded) {
 
 function refreshTrips() {
 	return new Promise((resolve, reject) => {
-		base("Trips").select().eachPage(function page(records, fetchNextPage) {
+		base("Trips")
+			.select({
+				sort:[{field: "Trip Name", direction: "asc"}]		
+			})
+			.eachPage(function page(records, fetchNextPage) {
 			records.forEach(record => {
 				let teacherIDs = record.get("Teachers");
 				let teachers = teacherIDs
@@ -140,10 +144,13 @@ function refreshTrips() {
 
 				allTrips[record.id] = {
 					name: record.get("Trip Name"),
-					startDate: moment(record.get("Start Date")).format("Do MMM YYYY"),
-					endDate: moment(record.get("End Date")).format("Do MMM YYYY"),
-					applyBy: moment(record.get("Deadline")).format("Do MMM YYYY"),
-					destinations: record.get("Destinations"),
+					startDate: moment(record.get("Start Date")).format("Do MMM YYYY") || "N/A",
+					endDate: moment(record.get("End Date")).format("Do MMM YYYY") || "N/A",
+					regularDeadline: moment(record.get("Regular Deadline")).format("Do MMM YYYY") || "N/A",
+					regularPrice: record.get("Regular Price"),
+					earlyBirdDeadline: moment(record.get("Early Bird Deadline")).format("Do MMM YYYY") || "N/A",
+					earlyBirdPrice: record.get("Early Bird Price") || "N/A",
+					destinations: record.get("Destinations") || "N/A",
 					teachers: teachers,
 					tripID: record.id
 				};
@@ -171,21 +178,25 @@ app.get("/trips", (req, res) => {
 	}
 
 	const trips = [];
-	base("Trips").select().eachPage(function page(records, fetchNextPage) {
-		let promises = [];
-		records.forEach(record => {
-			promises.push(promisifyRecord(record, trips, hasEnded));
-		});
-
-		Promise.all(promises)
-			.then(() => {
-				res.render("trips", {
-					trips: trips,
-					hasEnded: hasEnded
-				});
+	base("Trips")
+		.select({
+				sort:[{field: "Trip Name", direction: "asc"}]		
 			})
-			.catch(err => console.log(err));
-	});
+		.eachPage(function page(records, fetchNextPage) {
+			let promises = [];
+			records.forEach(record => {
+				promises.push(promisifyRecord(record, trips, hasEnded));
+			});
+
+			Promise.all(promises)
+				.then(() => {
+					res.render("trips", {
+						trips: trips,
+						hasEnded: hasEnded
+					});
+				})
+				.catch(err => console.log(err));
+		});
 });
 
 app.get("/trips/:tripID", (req, res) => {

@@ -9,8 +9,9 @@
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Trip</th>
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Dates</th>
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Destination</th>
-          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Deadline</th>
-          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Instructors</th>
+          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Early Bird Price Rate</th>
+          <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Regular Price Rate</th>
+          <!-- <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Instructors</th> -->
           <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white"></th>
         </tr>
       </thead>
@@ -20,8 +21,9 @@
           <td class="pv3 pr3 bb b--black-20"><a class="link f5 fw6 db blue no-underline underline-hover" href="/trips/{{t.tripID}}">{{t.name}}</a></td>
           <td class="pv3 pr3 bb b--black-20">{{t.startDate}} to {{t.endDate}}</td>
           <td class="pv3 pr3 bb b--black-20">{{t.destinations}}</td>
-          <td class="pv3 pr3 bb b--black-20">{{t.applyBy}}</td>
-          <td class="pv3 pr3 bb b--black-20">{{t.teachers}}</td>
+          <td class="pv3 pr3 bb b--black-20">{{t.earlyBirdPrice}}<br><br>apply by {{t.earlyBirdDeadline}}</td>
+          <td class="pv3 pr3 bb b--black-20">{{t.regularPrice}}<br><br>apply by {{t.regularDeadline}}</td>
+          <!-- <td class="pv3 pr3 bb b--black-20">{{t.teachers}}</td> -->
         </tr>
       {{/each}}
       </tbody>
