@@ -31,7 +31,10 @@ mapTeacherIdToName();
 // map teacher id to name
 const teacherIDtoDetails = {};
 function mapTeacherIdToName() {
-	base("Teachers").select().eachPage(
+	base("Teachers")
+		.select({
+			sort:[{field: "Name", direction: "asc"}]		
+		}).eachPage(
 		function page(records, fetchNextPage) {
 			records.forEach(function(record) {
 				teacherIDtoDetails[record.id] = {
