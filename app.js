@@ -133,32 +133,30 @@ function promisifyRecord(record, trips, hasEnded) {
 function refreshTrips() {
 	return new Promise((resolve, reject) => {
 		base("Trips")
-			.select({
-				sort:[{field: "Trip Name", direction: "asc"}]		
-			})
+			.select()
 			.eachPage(function page(records, fetchNextPage) {
-			records.forEach(record => {
-				let teacherIDs = record.get("Teachers");
-				let teachers = teacherIDs
-					? teacherIDs
-							.map(id => teacherIDtoDetails[id].name)
-							.join(", ")
-					: "";
+				records.forEach(record => {
+					let teacherIDs = record.get("Teachers");
+					let teachers = teacherIDs
+						? teacherIDs
+								.map(id => teacherIDtoDetails[id].name)
+								.join(", ")
+						: "";
 
-				allTrips[record.id] = {
-					name: record.get("Trip Name"),
-					startDate: moment(record.get("Start Date")).format("Do MMM YYYY") || "N/A",
-					endDate: moment(record.get("End Date")).format("Do MMM YYYY") || "N/A",
-					regularDeadline: moment(record.get("Regular Deadline")).format("Do MMM YYYY") || "N/A",
-					regularPrice: record.get("Regular Price"),
-					earlyBirdDeadline: moment(record.get("Early Bird Deadline")).format("Do MMM YYYY") || "N/A",
-					earlyBirdPrice: record.get("Early Bird Price") || "N/A",
-					destinations: record.get("Destinations") || "N/A",
-					teachers: teachers,
-					tripID: record.id
-				};
-				resolve(allTrips);
-			});
+					allTrips[record.id] = {
+						name: record.get("Trip Name"),
+						startDate: moment(record.get("Start Date")).format("Do MMM YYYY") || "N/A",
+						endDate: moment(record.get("End Date")).format("Do MMM YYYY") || "N/A",
+						regularDeadline: moment(record.get("Regular Deadline")).format("Do MMM YYYY") || "N/A",
+						regularPrice: record.get("Regular Price"),
+						earlyBirdDeadline: moment(record.get("Early Bird Deadline")).format("Do MMM YYYY") || "N/A",
+						earlyBirdPrice: record.get("Early Bird Price") || "N/A",
+						destinations: record.get("Destinations") || "N/A",
+						teachers: teachers,
+						tripID: record.id
+					};
+					resolve(allTrips);
+				});
 		});
 	});
 }
@@ -182,9 +180,7 @@ app.get("/trips", (req, res) => {
 
 	const trips = [];
 	base("Trips")
-		.select({
-				sort:[{field: "Trip Name", direction: "asc"}]		
-			})
+		.select()
 		.eachPage(function page(records, fetchNextPage) {
 			let promises = [];
 			records.forEach(record => {
@@ -193,6 +189,12 @@ app.get("/trips", (req, res) => {
 
 			Promise.all(promises)
 				.then(() => {
+
+					//sort by trip name
+					trips.sort((a, b) => {
+						return a.tripName.charCodeAt(0) - b.tripName.charCodeAt(0);
+					})
+
 					res.render("trips", {
 						trips: trips,
 						hasEnded: hasEnded
