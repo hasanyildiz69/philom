@@ -144,7 +144,7 @@ function refreshTrips() {
 						: "";
 
 					allTrips[record.id] = {
-						name: record.get("Trip Name"),
+						tripName: record.get("Trip Name"),
 						startDate: moment(record.get("Start Date")).format("Do MMM YYYY") || "N/A",
 						endDate: moment(record.get("End Date")).format("Do MMM YYYY") || "N/A",
 						regularDeadline: moment(record.get("Regular Deadline")).format("Do MMM YYYY") || "N/A",
@@ -230,7 +230,19 @@ app.get("/apply", (req, res) => {
 });
 
 app.get("/schedule", (req, res) => {
-	refreshTrips().then(trips => res.render("schedule", { trips: trips }));
+	refreshTrips()
+		.then(trips =>  {
+			const tripsArray = [];
+			for (key in trips) {
+				tripsArray.push(trips[key])
+			}
+
+			tripsArray.sort((a, b) => {
+				return a.tripName.charCodeAt(0) - b.tripName.charCodeAt(0);
+			});
+
+			res.render("schedule", { trips: tripsArray });
+		});
 });
 
 app.get("/instructors", (req, res) => {
