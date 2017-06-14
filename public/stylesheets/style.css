@@ -14,3 +14,7 @@ iframe {
 	padding: 0;
 	border: none;
 }
+
+p {
+	text-align: justify;
+}

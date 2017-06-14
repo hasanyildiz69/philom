@@ -21,8 +21,8 @@
           <td class="pv3 pr3 bb b--black-20"><a class="link f5 fw6 db blue no-underline underline-hover" href="/trips/{{t.tripID}}">{{t.tripName}}</a></td>
           <td class="pv3 pr3 bb b--black-20">from <span class="fw6 green">{{t.startDate}}</span><br>to <span class="fw6 green">{{t.endDate}}</span></td>
           <td class="pv3 pr3 bb b--black-20"><span class="fw6 purple">{{t.destinations}}</span></td>
-          <td class="pv3 pr3 bb b--black-20"><span class="fw6 light-purple">{{t.earlyBirdPrice}}</span><br><br>Apply by <span class="fw6">{{t.earlyBirdDeadline}}</span></td>
-          <td class="pv3 pr3 bb b--black-20"><span class="fw6 dark-pink">{{t.regularPrice}}</span><br><br>Apply by <span class="fw6">{{t.regularDeadline}}</span></td>
+          <td class="pv3 pr3 bb b--black-20"><span class="fw6 light-purple">{{{t.earlyBirdPrice}}}</span><br><br>Apply by <span class="fw6">{{t.earlyBirdDeadline}}</span></td>
+          <td class="pv3 pr3 bb b--black-20"><span class="fw6 dark-pink">{{{t.regularPrice}}}</span><br><br>Apply by <span class="fw6">{{t.regularDeadline}}</span></td>
           <!-- <td class="pv3 pr3 bb b--black-20">{{t.teachers}}</td> -->
         </tr>
       {{/each}}

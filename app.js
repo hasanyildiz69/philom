@@ -109,7 +109,7 @@ function promisifyRecord(record, trips, hasEnded) {
 				: "no image";
 			teacherIDs = record.get("Teachers");
 			trip.teachers = teacherIDs
-				? teacherIDs.map(id => teacherIDtoDetails[id].name).join(", ")
+				? teacherIDs.map(id => teacherIDtoDetails[id] && teacherIDtoDetails[id].name).join(", ")
 				: "";
 
 			const id = record.get("Itinerary");
@@ -148,9 +148,9 @@ function refreshTrips() {
 						startDate: moment(record.get("Start Date")).format("Do MMM YYYY") || "N/A",
 						endDate: moment(record.get("End Date")).format("Do MMM YYYY") || "N/A",
 						regularDeadline: moment(record.get("Regular Deadline")).format("Do MMM YYYY") || "N/A",
-						regularPrice: record.get("Regular Price"),
+						regularPrice: record.get("Regular Price").replace("\n", "<br>"),
 						earlyBirdDeadline: moment(record.get("Early Bird Deadline")).format("Do MMM YYYY") || "N/A",
-						earlyBirdPrice: record.get("Early Bird Price") || "N/A",
+						earlyBirdPrice: record.get("Early Bird Price").replace("\n", "<br>") || "N/A",
 						destinations: record.get("Destinations") || "N/A",
 						teachers: teachers,
 						tripID: record.id
