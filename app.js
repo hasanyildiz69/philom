@@ -54,6 +54,12 @@ function mapTeacherIdToName() {
 	);
 }
 
+function sortDay(a, b) {
+	aDay = parseInt(a.substring(4))
+	bDay = parseInt(b.substring(4))
+	return aDay - bDay;
+}
+
 function getItinerary(id, trip) {
 	return new Promise((resolve, reject) => {
 		trip.itinerary = {};
@@ -73,7 +79,7 @@ function getItinerary(id, trip) {
 						arr.push(key);
 					}
 				}
-				arr.sort();
+				arr.sort(sortDay);
 				arr.forEach(key => {
 					trip.itinerary[key] = record.fields[key].replace("\n", "<br><br>");
 				});
