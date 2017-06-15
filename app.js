@@ -70,7 +70,7 @@ function getItinerary(id, trip) {
 						key.substring(0, 3) === "Day" &&
 						record.fields.hasOwnProperty(key)
 					) {
-						arr.push(parseInt(key));
+						arr.push(key);
 					}
 				}
 				arr.sort();
