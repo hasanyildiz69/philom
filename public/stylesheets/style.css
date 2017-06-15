@@ -18,3 +18,10 @@ iframe {
 p {
 	text-align: justify;
 }
+
+::selection {
+  background: #FBF1A9;
+}
+::-moz-selection {
+  background: #FBF1A9;
+}
