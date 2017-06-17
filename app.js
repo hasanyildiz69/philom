@@ -268,6 +268,10 @@ app.get("/apply", (req, res) => {
 	res.render("apply", {});
 });
 
+app.get("/contact", (req, res) => {
+	res.render("contact", {});
+});
+
 // handle 404 errors
 app.use(function(req, res) {
 	res.status(400);
