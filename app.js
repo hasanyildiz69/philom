@@ -40,7 +40,7 @@ function mapTeacherIdToName() {
 				teacherIDtoDetails[record.id] = {
 					name: record.get("Name"),
 					description: record.get("Description"),
-					picture: record.get("Picture")[0].url
+					picture: record.get("Picture") ? record.get("Picture")[0].url : "images/background-image/jpeg"
 				};
 			});
 			fetchNextPage();
@@ -142,26 +142,30 @@ function refreshTrips() {
 			.select()
 			.eachPage(function page(records, fetchNextPage) {
 				records.forEach(record => {
-					let teacherIDs = record.get("Teachers");
-					let teachers = teacherIDs
-						? teacherIDs
-								.map(id => teacherIDtoDetails[id].name)
-								.join(", ")
-						: "";
+					if (record.get("Trip Name") !== undefined) {
+						let teacherIDs = record.get("Teachers");
+						let teachers = teacherIDs
+							? teacherIDs
+									.map(id => teacherIDtoDetails[id].name)
+									.join(", ")
+							: "";
 
-					allTrips[record.id] = {
-						tripName: record.get("Trip Name"),
-						startDate: moment(record.get("Start Date")).format("Do MMM YYYY") || "N/A",
-						endDate: moment(record.get("End Date")).format("Do MMM YYYY") || "N/A",
-						regularDeadline: moment(record.get("Regular Deadline")).format("Do MMM YYYY") || "N/A",
-						regularPrice: record.get("Regular Price").replace("\n", "<br>"),
-						earlyBirdDeadline: moment(record.get("Early Bird Deadline")).format("Do MMM YYYY") || "N/A",
-						earlyBirdPrice: record.get("Early Bird Price").replace("\n", "<br>") || "N/A",
-						destinations: record.get("Destinations") || "N/A",
-						teachers: teachers,
-						tripID: record.id
-					};
-					resolve(allTrips);
+						allTrips[record.id] = {
+							tripName: record.get("Trip Name"),
+							startDate: moment(record.get("Start Date")).format("Do MMM YYYY") || "N/A",
+							endDate: moment(record.get("End Date")).format("Do MMM YYYY") || "N/A",
+							regularDeadline: moment(record.get("Regular Deadline")).format("Do MMM YYYY") || "N/A",
+							regularPrice: record.get("Regular Price").replace("\n", "<br>"),
+							earlyBirdDeadline: moment(record.get("Early Bird Deadline")).format("Do MMM YYYY") || "N/A",
+							earlyBirdPrice: record.get("Early Bird Price").replace("\n", "<br>") || "N/A",
+							destinations: record.get("Destinations") || "N/A",
+							teachers: teachers,
+							tripID: record.id
+						};
+						resolve(allTrips);
+					} else {
+						reject("trip name undefined");
+					} // end undefined check		
 				});
 		});
 	});
