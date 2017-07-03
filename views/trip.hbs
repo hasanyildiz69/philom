@@ -3,8 +3,6 @@
   <div class="tc">	
   	<div class="f6 ttu tracked blue pb2">Instructor: <strong>{{trip.teachers}}</strong></div>
    	<div class="f6 ttu tracked purple pb2">from <strong>{{trip.startDate}}</strong> to <strong>{{trip.endDate}}</strong></div>
-   	<div class="f6 ttu tracked green pb2">Early bird price <strong>{{{trip.earlyBirdPrice}}}</strong></div>
-   	<div class="f6 ttu tracked light-purple pb2">Regular price <strong>{{trip.regularPrice}}</strong></div>
   </div>
    
 	<article class="baskerville pb2">
@@ -16,6 +14,37 @@
 	  </div>
 	</article>
 
+<h2 class="baskerville f1 measure tc fw5 ph3 ph0-l">Price Details</h2>
+<article class="center mw5 mw6-ns hidden ba mv4">
+  <h1 class="f4 bg-near-black white mv0 pv2 ph3">Note</h1>
+  <div class="pa3 bt">
+    <p class="f6 f5-ns lh-copy measure mv0">
+			    <p class="f6 f5-ns lh-copy measure mv0">
+		    {{trip.priceInfo}}
+		    </p>
+    </p>
+  </div>
+</article>
+
+<article class="center mw5 mw6-ns hidden ba mv4">
+  <h1 class="f4 bg-near-black white mv0 pv2 ph3">Early Bird Price</h1>
+  <div class="pa3 bt">
+    <p class="f6 f5-ns lh-copy measure mv0">
+       	<div class="f6 ttu tracked purple pb2"><strong>{{{trip.earlyBirdPrice}}}</strong></div><br>
+       	<div>Apply by <strong>{{trip.earlyBirdDeadline}}</strong></div>
+    </p>
+  </div>
+</article>
+
+<article class="center mw5 mw6-ns hidden ba mv4">
+  <h1 class="f4 bg-near-black white mv0 pv2 ph3">Regular Price</h1>
+  <div class="pa3 bt">
+    <p class="f6 f5-ns lh-copy measure mv0">
+       	<div class="f6 ttu tracked blue pb2"><strong>{{{trip.regularPrice}}}</strong></div><br>
+       	<div>Apply by <strong>{{trip.regularDeadline}}</strong></div>
+    </p>
+  </div>
+</article>
 
 <article class="pb2">
 	<!-- itinerary -->
