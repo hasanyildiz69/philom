@@ -117,6 +117,8 @@ function promisifyRecord(record, trips, hasEnded) {
 			trip.teachers = teacherIDs
 				? teacherIDs.map(id => teacherIDtoDetails[id] && teacherIDtoDetails[id].name).join(", ")
 				: "";
+			trip.earlyBirdPrice = record.get("Early Bird Price");
+			trip.regularPrice = record.get("Regular Price");
 
 			const id = record.get("Itinerary");
 			if (id) {
